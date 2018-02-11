@@ -70,6 +70,19 @@ userSchema.methods.generateAuthToken = function () {
   }).catch((e)=>{})
 };
 
+userSchema.methods.removeToken = function(token){
+  // $pull is a mongo operator that pulls something fom an array
+  // that meets a certain critera
+  user = this
+  return user.update({
+    $pull:{
+      tokens:{
+        token: token
+      }
+    }
+  })
+}
+
 userSchema.statics.findByToken = function(token){
   let User = this
   var decoded;
