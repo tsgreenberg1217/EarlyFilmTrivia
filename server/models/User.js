@@ -32,6 +32,8 @@ userSchema.pre('save', function(next) {
     var user = this;
 
     // only hash the password if it has been modified (or is new)
+    // if this is not there, the passowrd is hashed everytime the model is saved but not the password.
+    // sp you hash the hash of the passoword which will break th program
     if (!user.isModified('password')) return next();
 
     // generate a salt

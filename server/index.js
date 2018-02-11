@@ -39,6 +39,20 @@ app.post('/signin', (req,res) => {
   })
 })
 
+app.post('users/login', (req,res)=>{
+  const body = lodash.pish(req.body, ['username', 'password'])
+  const user = User.findOne({username: body.username})
+  .then(user =>{
+    if(!user){
+      res.status(401).send()
+    }
+    user.comparePassword(body.password,())
+    .then(res =>{
+      
+    })
+  })
+})
+
 
 app.get('/users/me', authenticate ,(req,res)=>{
   res.send(req.user)
