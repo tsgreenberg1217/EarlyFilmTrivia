@@ -29,8 +29,6 @@ app.post('/signin', (req,res) => {
     username: body.username,
     password: body.password
   })
-  console.log('the body is',body)
-  console.log('the user is',user)
   user.save().then(() => {
     return user.generateAuthToken();
   }).then((token) => {
@@ -41,13 +39,16 @@ app.post('/signin', (req,res) => {
 })
 
 app.get('/users/me', (req,res)=>{
+
   let token = req.header('x-auth')
   const user = User.findByToken(token)
   .then(user =>{
     if(!user){
-
+      return Promise.reject()
     }
     res.send(user)
+  }).catch((err)=>{
+    res.status(401).send()
   })
 })
 

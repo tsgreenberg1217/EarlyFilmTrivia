@@ -20,19 +20,7 @@ const userSchema = new Schema({
    }]
 })
 
-userSchema.statics.findByToken = function(token){
-  let User = this
-   var decoded;
-  try {
-      decoded = jwt.verify(token,keys.secret);
-    } catch (e) {
-  }
-  return User.findOne({
-    '_id': decoded._id,
-    'tokens.token': token,
-    'tokens.access':'auth'
-  })
-}
+
 
 userSchema.methods.toJSON = function(){
   const user = this
@@ -71,7 +59,7 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
 userSchema.methods.generateAuthToken = function () {
   var user = this;
   var access = 'auth';
-  var token = jwt.sign({_id: user._id.toHexString()}, access).toString();
+  var token = jwt.sign({_id: user._id.toHexString(), access}, keys.secret).toString();
 
   user.tokens.push({access, token});
 
@@ -79,5 +67,21 @@ userSchema.methods.generateAuthToken = function () {
     return token
   }).catch((e)=>{})
 };
+
+userSchema.statics.findByToken = function(token){
+  let User = this
+  var decoded;
+  console.log(keys.secret)
+  try {
+    decoded = jwt.verify(token,keys.secret);
+    } catch (e) {
+      return Promise.reject()
+  }
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access':'auth'
+  })
+}
 
 mongoose.model('users', userSchema)
