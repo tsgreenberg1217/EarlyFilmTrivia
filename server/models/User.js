@@ -1,3 +1,4 @@
+const keys = require('../config/keys')
 const mongoose = require('mongoose')
 const {Schema} = mongoose
 const bcrypt = require('bcrypt')
@@ -18,6 +19,20 @@ const userSchema = new Schema({
     }
    }]
 })
+
+userSchema.statics.findByToken = function(token){
+  let User = this
+   var decoded;
+  try {
+      decoded = jwt.verify(token,keys.secret);
+    } catch (e) {
+  }
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access':'auth'
+  })
+}
 
 userSchema.methods.toJSON = function(){
   const user = this

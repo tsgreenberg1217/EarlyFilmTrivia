@@ -40,5 +40,16 @@ app.post('/signin', (req,res) => {
   })
 })
 
+app.get('/users/me', (req,res)=>{
+  let token = req.header('x-auth')
+  const user = User.findByToken(token)
+  .then(user =>{
+    if(!user){
+
+    }
+    res.send(user)
+  })
+})
+
 const PORT = process.env.PORT || 5000
 app.listen(PORT)
