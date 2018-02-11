@@ -10,6 +10,7 @@ const bodyParser  = require('body-parser');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken')
 const lodash = require('lodash')
+const {authenticate} = require('./middleware/authenticate')
 
 
 app.use(function(req, res, next) {
@@ -38,18 +39,24 @@ app.post('/signin', (req,res) => {
   })
 })
 
-app.get('/users/me', (req,res)=>{
+// const authenticate = (req,res,next)  =>{
+//   // route wont run until next is called in middleware
+//   let token = req.header('x-auth')
+//   const user = User.findByToken(token)
+//   .then(user =>{
+//     if(!user){
+//       return Promise.reject()
+//     }
+//     req.user = user
+//     req.token = token
+//     next()
+//   }).catch((err)=>{
+//     res.status(401).send()
+//   })
+// }
 
-  let token = req.header('x-auth')
-  const user = User.findByToken(token)
-  .then(user =>{
-    if(!user){
-      return Promise.reject()
-    }
-    res.send(user)
-  }).catch((err)=>{
-    res.status(401).send()
-  })
+app.get('/users/me', authenticate ,(req,res)=>{
+  res.send(req.user)
 })
 
 const PORT = process.env.PORT || 5000
