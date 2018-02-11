@@ -94,7 +94,7 @@ userSchema.statics.findByCreds = function(username,password){
       return Promise.reject()
     }
     // compare only supports callbacks, not promises
-    return new Promise( (res,rej) =>{
+    return new Promise( (resolve,reject) =>{
       bcrypt.compare(password,user.password, (err,res) =>{
         if(res){
           resolve(user)
