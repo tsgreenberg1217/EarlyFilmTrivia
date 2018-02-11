@@ -51,12 +51,12 @@ userSchema.pre('save', function(next) {
     });
 });
 
-userSchema.methods.comparePassword = function(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-        if (err) return cb(err);
-        cb(null, isMatch);
-    });
-};
+// userSchema.methods.comparePassword = function(candidatePassword, cb) {
+//     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+//         if (err) return cb(err);
+//         cb(null, isMatch);
+//     });
+// };
 
 userSchema.methods.generateAuthToken = function () {
   var user = this;
@@ -83,6 +83,27 @@ userSchema.statics.findByToken = function(token){
     '_id': decoded._id,
     'tokens.token': token,
     'tokens.access':'auth'
+  })
+}
+
+userSchema.statics.findByCreds = function(username,password){
+  let User = this
+  return User.findOne({username})
+  .then((user) =>{
+    if(!user){
+      return Promise.reject()
+    }
+    // compare only supports callbacks, not promises
+    return new Promise( (res,rej) =>{
+      bcrypt.compare(password,user.password, (err,res) =>{
+        if(res){
+          resolve(user)
+        }
+        else{
+          reject()
+        }
+      })
+    })
   })
 }
 

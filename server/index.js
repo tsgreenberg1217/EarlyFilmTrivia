@@ -41,15 +41,22 @@ app.post('/signin', (req,res) => {
 
 app.post('users/login', (req,res)=>{
   const body = lodash.pish(req.body, ['username', 'password'])
-  const user = User.findOne({username: body.username})
-  .then(user =>{
-    if(!user){
-      res.status(401).send()
-    }
-    user.comparePassword(body.password,())
-    .then(res =>{
-      
-    })
+  User.findByCreds(body.username, body.password)
+  .then((user) =>{
+    res.send(user)
+  })
+  .catch((err)=>{
+    res.status(400).send()
+  })
+  // const user = User.findOne({username: body.username})
+  // .then(user =>{
+  //   if(!user){
+  //     res.status(401).send()
+  //   }
+  //   user.comparePassword(body.password,())
+  //   .then(res =>{
+  //
+  //   })
   })
 })
 
