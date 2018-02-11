@@ -39,21 +39,6 @@ app.post('/signin', (req,res) => {
   })
 })
 
-// const authenticate = (req,res,next)  =>{
-//   // route wont run until next is called in middleware
-//   let token = req.header('x-auth')
-//   const user = User.findByToken(token)
-//   .then(user =>{
-//     if(!user){
-//       return Promise.reject()
-//     }
-//     req.user = user
-//     req.token = token
-//     next()
-//   }).catch((err)=>{
-//     res.status(401).send()
-//   })
-// }
 
 app.get('/users/me', authenticate ,(req,res)=>{
   res.send(req.user)
